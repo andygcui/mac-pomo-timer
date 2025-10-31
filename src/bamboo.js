@@ -313,7 +313,16 @@ window.addEventListener("DOMContentLoaded", () => {
         if (window.audio && window.audio.background) window.audio.background.stop();
         
         if (stage < 3) {
+          const previousStage = stage;
           stage++;
+          
+          // Track plant completion when it reaches stage 3
+          if (stage === 3 && previousStage === 2 && window.AchievementsSystem) {
+            const result = window.AchievementsSystem.recordPlantGrown('bamboo');
+            if (result.leveledUp) {
+              messageEl.textContent = `Level ${result.level} reached! Your bamboo is fully grown! \n `;
+            }
+          }
           
           if (stage < 3) {
             // Apply growth animation before showing the static image
@@ -326,7 +335,9 @@ window.addEventListener("DOMContentLoaded", () => {
             applyGrowthAnimation().then(() => {
               startFinalAnimation();
             });
-            messageEl.textContent = "Your bamboo is fully grown! \n ";
+            if (messageEl.textContent.indexOf("Level") === -1) {
+              messageEl.textContent = "Your bamboo is fully grown! \n ";
+            }
             startBtn.textContent = "Grow a new plant! \n";
             new Notification("Hooray!", { body: "Your bamboo is fully grown" });
             // Hide timer when plant is fully grown
@@ -392,7 +403,16 @@ window.addEventListener("DOMContentLoaded", () => {
           isBreak = false;
           
           if (stage < 3) {
+            const previousStage = stage;
             stage++;
+            
+            // Track plant completion when it reaches stage 3
+            if (stage === 3 && previousStage === 2 && window.AchievementsSystem) {
+              const result = window.AchievementsSystem.recordPlantGrown('bamboo');
+              if (result.leveledUp) {
+                messageEl.textContent = `Level ${result.level} reached! Your bamboo is fully grown! \n `;
+              }
+            }
             
             if (stage < 3) {
               // Apply growth animation before showing the static image
@@ -405,7 +425,9 @@ window.addEventListener("DOMContentLoaded", () => {
               applyGrowthAnimation().then(() => {
                 startFinalAnimation();
               });
-              messageEl.textContent = "Your bamboo is fully grown! \n ";
+              if (messageEl.textContent.indexOf("Level") === -1) {
+                messageEl.textContent = "Your bamboo is fully grown! \n ";
+              }
             startBtn.textContent = "Grow a new plant! \n";
               new Notification("Hooray!", { body: "Your bamboo is fully grown" });
               // Hide timer when plant is fully grown
@@ -421,7 +443,16 @@ window.addEventListener("DOMContentLoaded", () => {
             hasCompletedFocus = true;
             
             if (stage < 3) {
+              const previousStage = stage;
               stage++;
+              
+              // Track plant completion when it reaches stage 3
+              if (stage === 3 && previousStage === 2 && window.AchievementsSystem) {
+                const result = window.AchievementsSystem.recordPlantGrown('bamboo');
+                if (result.leveledUp) {
+                  messageEl.textContent = `Level ${result.level} reached! Your bamboo is fully grown! \n `;
+                }
+              }
               
               if (stage < 3) {
                 // Apply growth animation before showing the static image
@@ -434,7 +465,9 @@ window.addEventListener("DOMContentLoaded", () => {
                 applyGrowthAnimation().then(() => {
                   startFinalAnimation();
                 });
-                messageEl.textContent = "Your bamboo is fully grown! \n ";
+                if (messageEl.textContent.indexOf("Level") === -1) {
+                  messageEl.textContent = "Your bamboo is fully grown! \n ";
+                }
                 startBtn.textContent = "Grow a new plant! \n";
                 new Notification("Hooray!", { body: "Your bamboo is fully grown" });
                 // Hide timer when plant is fully grown

@@ -8,6 +8,9 @@
 <body>
   <div class="top-bar">
     <a href="index.html" class="home">Back</a>
+    <span id="level-display" class="level-display" onclick="window.location.href='achievements.html'">
+      Level <span id="current-level">1</span>
+    </span>
     <a href="settings.html" class="settings">Settings</a>
   </div>
 
@@ -24,6 +27,20 @@
   <button id="start">Start</button>
 
   <script src="audio.js"></script>
+  <script src="achievements.js"></script>
+  <script>
+    // Display current level
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.AchievementsSystem) {
+        AchievementsSystem.init();
+        const level = AchievementsSystem.getCurrentLevel();
+        const levelDisplay = document.getElementById('current-level');
+        if (levelDisplay) {
+          levelDisplay.textContent = level;
+        }
+      }
+    });
+  </script>
   <script src="bamboo.js"></script>
 </body>
 </html>

@@ -7,6 +7,9 @@
 <body>
   <div class="top-bar">
     <a href="index.html" class="home">Home</a>
+    <span id="level-display" class="level-display" onclick="window.location.href='achievements.html'">
+      Level <span id="current-level">1</span>
+    </span>
     <a href="settings.html" class="settings">Settings</a>
   </div>
   <h1>Pomo-plant</h1>
@@ -32,10 +35,23 @@
 
   <p class="blink">Choose a plant to start</p>
 
+  <script src="achievements.js"></script>
   <script>
     function goTo(page) {
       window.location.href = page;
     }
+    
+    // Display current level
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.AchievementsSystem) {
+        AchievementsSystem.init();
+        const level = AchievementsSystem.getCurrentLevel();
+        const levelDisplay = document.getElementById('current-level');
+        if (levelDisplay) {
+          levelDisplay.textContent = level;
+        }
+      }
+    });
   </script>
 </body>
 </html>

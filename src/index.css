@@ -13,8 +13,10 @@ body {
 .top-bar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   padding-top: 10px;
   padding-left: 10px;
+  padding-right: 10px;
   font-family: 'VT323', monospace;
 }
 
@@ -109,4 +111,17 @@ p {
   font-family: 'VT323', monospace;
   font-size: 1.2rem;
   letter-spacing: 1px;
+}
+
+.level-display {
+  cursor: pointer;
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  color: black;
+  flex: 1;
+  text-align: center;
+}
+
+.level-display:hover {
+  opacity: 0.7;
 }

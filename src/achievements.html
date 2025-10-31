@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Achievements</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .achievements-container {
+      max-width: 360px;
+      margin: 0 auto;
+      padding: 0 8px 56px;
+      text-align: center;
+    }
+    
+    .stats-section {
+      margin-bottom: 30px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 12px;
+    }
+    
+    .stat-item {
+      margin: 10px 0;
+      font-family: 'VT323', monospace;
+      font-size: 22px;
+      color: #4d5d53;
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: #2d3d33;
+      display: block;
+      margin-top: 5px;
+    }
+    
+    .level-display {
+      font-size: 48px;
+      color: #4d5d53;
+      margin: 10px 0;
+      font-family: 'Press Start 2P', monospace;
+    }
+    
+    .achievements-list {
+      text-align: left;
+    }
+    
+    .achievement-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      margin: 8px 0;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 8px;
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      transition: transform 0.2s;
+    }
+    
+    .achievement-item.unlocked {
+      background: rgba(77, 93, 83, 0.2);
+      border: 2px solid #4d5d53;
+    }
+    
+    .achievement-item.locked {
+      opacity: 0.5;
+    }
+    
+    .achievement-icon {
+      font-size: 32px;
+      margin-right: 12px;
+      min-width: 40px;
+      text-align: center;
+    }
+    
+    .achievement-info {
+      flex: 1;
+    }
+    
+    .achievement-name {
+      font-weight: bold;
+      color: #4d5d53;
+      margin-bottom: 4px;
+    }
+    
+    .achievement-description {
+      font-size: 16px;
+      color: #666;
+    }
+    
+    .locked-icon {
+      font-size: 24px;
+      margin-left: auto;
+      opacity: 0.3;
+    }
+    
+    .plant-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 15px;
+    }
+    
+    .plant-stat {
+      font-family: 'VT323', monospace;
+      font-size: 18px;
+      color: #4d5d53;
+    }
+    
+    .plant-stat-value {
+      font-size: 24px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <a href="index.html" class="home">Back</a>
+    <span id="level-display" class="level-display" onclick="window.location.href='achievements.html'">
+      Level <span id="current-level">1</span>
+    </span>
+    <a href="settings.html" class="settings">Settings</a>
+  </div>
+
+  <h1>Achievements</h1>
+
+  <div class="achievements-container">
+    <div class="stats-section">
+      <div class="stat-item">
+        Level
+        <span class="stat-value level-display" id="currentLevel">1</span>
+      </div>
+      <div class="stat-item">
+        Total Plants Grown
+        <span class="stat-value" id="totalPlants">0</span>
+      </div>
+      
+      <div class="plant-stats">
+        <div class="plant-stat">
+          🌵 Cactus
+          <div class="plant-stat-value" id="cactusCount">0</div>
+        </div>
+        <div class="plant-stat">
+          🌲 Bonsai
+          <div class="plant-stat-value" id="bonsaiCount">0</div>
+        </div>
+        <div class="plant-stat">
+          🌺 Orchid
+          <div class="plant-stat-value" id="orchidCount">0</div>
+        </div>
+        <div class="plant-stat">
+          🎋 Bamboo
+          <div class="plant-stat-value" id="bambooCount">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="achievements-list" id="achievementsList">
+      <!-- Achievements will be populated by JavaScript -->
+    </div>
+  </div>
+
+  <script src="achievements.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // Initialize achievements system
+      if (window.AchievementsSystem) {
+        AchievementsSystem.init();
+        
+        // Update stats
+        const totalPlants = AchievementsSystem.getTotalPlantsGrown();
+        const currentLevel = AchievementsSystem.getCurrentLevel();
+        const plantsByType = AchievementsSystem.getPlantsByType();
+        const unlockedAchievements = AchievementsSystem.getAchievements();
+        const achievementDefinitions = AchievementsSystem.getAchievementDefinitions();
+        
+        document.getElementById('currentLevel').textContent = currentLevel;
+        const topBarLevelDisplay = document.getElementById('current-level');
+        if (topBarLevelDisplay) {
+          topBarLevelDisplay.textContent = currentLevel;
+        }
+        document.getElementById('totalPlants').textContent = totalPlants;
+        document.getElementById('cactusCount').textContent = plantsByType.cactus || 0;
+        document.getElementById('bonsaiCount').textContent = plantsByType.bonsai || 0;
+        document.getElementById('orchidCount').textContent = plantsByType.orchid || 0;
+        document.getElementById('bambooCount').textContent = plantsByType.bamboo || 0;
+        
+        // Display achievements
+        const achievementsList = document.getElementById('achievementsList');
+        achievementDefinitions.forEach(achievement => {
+          const isUnlocked = unlockedAchievements.includes(achievement.id);
+          const achievementEl = document.createElement('div');
+          achievementEl.className = `achievement-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+          
+          achievementEl.innerHTML = `
+            <div class="achievement-icon">${isUnlocked ? achievement.icon : '🔒'}</div>
+            <div class="achievement-info">
+              <div class="achievement-name">${achievement.name}</div>
+              <div class="achievement-description">${achievement.description}</div>
+            </div>
+            ${isUnlocked ? '<div class="locked-icon">✓</div>' : '<div class="locked-icon">🔒</div>'}
+          `;
+          
+          achievementsList.appendChild(achievementEl);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
