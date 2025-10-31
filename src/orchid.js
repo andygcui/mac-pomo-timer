@@ -241,6 +241,11 @@ window.addEventListener("DOMContentLoaded", () => {
     startBtn.textContent = "Pause";
     messageEl.textContent = "Focus session started! \n ";
     
+    // Check for time-based achievements
+    if (window.AchievementsSystem) {
+      window.AchievementsSystem.checkTimeBasedAchievements();
+    }
+    
     // Start focus animation during focus session - do this before setting up the timer
     startAnimation(plantStages.focus[stage]);
     
