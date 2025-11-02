@@ -34,9 +34,58 @@ const AchievementsSystem = {
     return parseInt(localStorage.getItem('currentLevel') || '1', 10);
   },
   
-  // Calculate level from total plants (level 1 = 1 plant, level 2 = 2 plants, etc.)
+  // Calculate level from total plants
+  // Level 1: need 1 plant (0->1 total)
+  // Level 2: need 2 MORE plants (1->3 total)  
+  // Level 3: need 3 MORE plants (3->6 total)
+  // Level 4: need 4 MORE plants (6->10 total)
+  // Level n: need n MORE plants
   calculateLevel(totalPlants) {
-    return Math.max(1, totalPlants);
+    if (totalPlants === 0) return 1;
+    if (totalPlants === 1) return 2;
+    
+    // After level 2, each level needs progressively more plants
+    // Level 3 starts at 3 total plants (1+2)
+    // Level 4 starts at 6 total plants (1+2+3)
+    // Level 5 starts at 10 total plants (1+2+3+4)
+    let level = 2;
+    let requiredPlants = 3; // Level 3 requires 3 total plants
+    
+    while (totalPlants >= requiredPlants) {
+      level++;
+      requiredPlants += level; // Add plants needed for next level
+    }
+    
+    return level;
+  },
+  
+  // Get level progress
+  getLevelProgress() {
+    const total = this.getTotalPlantsGrown();
+    const currentLevel = this.calculateLevel(total);
+    
+    // Calculate how many plants are needed to START the current level
+    let plantsNeededForLevel = 0;
+    for (let i = 1; i < currentLevel; i++) {
+      plantsNeededForLevel += i;
+    }
+    
+    // How many plants beyond the start of the current level
+    const plantsInCurrentLevel = total - plantsNeededForLevel;
+    
+    // How many plants are needed to COMPLETE the current level
+    const plantsNeededToComplete = currentLevel;
+    
+    // Progress within current level
+    const progress = plantsNeededToComplete === 0 ? 0 : plantsInCurrentLevel / plantsNeededToComplete;
+    
+    return {
+      currentLevel: currentLevel,
+      plantsGrown: total,
+      plantsNeeded: plantsNeededToComplete,
+      progress: Math.min(progress, 1.0),
+      nextLevelPlants: plantsNeededToComplete - plantsInCurrentLevel
+    };
   },
   
   // Get plants grown by type

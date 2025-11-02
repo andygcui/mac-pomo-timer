@@ -133,9 +133,14 @@
 <body>
   <div class="top-bar">
     <a href="index.html" class="home">Home</a>
-    <span id="level-display" class="level-display" onclick="window.location.href='achievements.html'">
-      Level <span id="current-level">1</span>
-    </span>
+    <div id="level-display-container" style="flex: 1; display: flex; flex-direction: column; align-items: center;" onclick="window.location.href='achievements.html'">
+      <span id="level-display" class="level-display">
+        Level <span id="current-level">1</span>
+      </span>
+      <div class="level-progress-bar-container" style="width: 100px; height: 4px; background: rgba(0,0,0,0.1); border-radius: 2px; margin-top: 2px;">
+        <div id="level-progress-bar" style="height: 100%; width: 0%; background: #4d5d53; border-radius: 2px; transition: width 0.3s;"></div>
+      </div>
+    </div>
     <a href="settings.html" class="settings">Settings</a>
   </div>
 
@@ -144,6 +149,9 @@
   <div class="achievements-container">
     <div class="achievements-list" id="achievementsList">
       <!-- Achievements will be populated by JavaScript -->
+    </div>
+    <div style="text-align: center; margin-top: 30px; font-family: 'VT323', monospace; font-size: 20px; color: #4d5d53;">
+      Total Plants Grown: <strong id="total-plants-grown">0</strong>
     </div>
   </div>
 
@@ -155,18 +163,37 @@
         AchievementsSystem.init();
         
         // Update stats
-        const currentLevel = AchievementsSystem.getCurrentLevel();
+        const progress = AchievementsSystem.getLevelProgress();
         const unlockedAchievements = AchievementsSystem.getAchievements();
         const achievementDefinitions = AchievementsSystem.getAchievementDefinitions();
         
         const topBarLevelDisplay = document.getElementById('current-level');
+        const progressBar = document.getElementById('level-progress-bar');
         if (topBarLevelDisplay) {
-          topBarLevelDisplay.textContent = currentLevel;
+          topBarLevelDisplay.textContent = progress.currentLevel;
+        }
+        if (progressBar) {
+          progressBar.style.width = (progress.progress * 100) + '%';
         }
         
-        // Display achievements
+        // Display total plants grown
+        const totalPlantsDisplay = document.getElementById('total-plants-grown');
+        if (totalPlantsDisplay) {
+          totalPlantsDisplay.textContent = progress.plantsGrown;
+        }
+        
+        // Display achievements - sort so unlocked ones appear first
         const achievementsList = document.getElementById('achievementsList');
-        achievementDefinitions.forEach(achievement => {
+        const sortedAchievements = achievementDefinitions.sort((a, b) => {
+          const aUnlocked = unlockedAchievements.includes(a.id);
+          const bUnlocked = unlockedAchievements.includes(b.id);
+          // Unlocked achievements come first
+          if (aUnlocked && !bUnlocked) return -1;
+          if (!aUnlocked && bUnlocked) return 1;
+          return 0;
+        });
+        
+        sortedAchievements.forEach(achievement => {
           const isUnlocked = unlockedAchievements.includes(achievement.id);
           const achievementEl = document.createElement('div');
           achievementEl.className = `achievement-item ${isUnlocked ? 'unlocked' : 'locked'}`;

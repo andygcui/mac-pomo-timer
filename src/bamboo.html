@@ -8,9 +8,14 @@
 <body>
   <div class="top-bar">
     <a href="index.html" class="home">Back</a>
-    <span id="level-display" class="level-display" onclick="window.location.href='achievements.html'">
-      Level <span id="current-level">1</span>
-    </span>
+    <div id="level-display-container" style="flex: 1; display: flex; flex-direction: column; align-items: center;" onclick="window.location.href='achievements.html'">
+      <span id="level-display" class="level-display">
+        Level <span id="current-level">1</span>
+      </span>
+      <div class="level-progress-bar-container" style="width: 100px; height: 4px; background: rgba(0,0,0,0.1); border-radius: 2px; margin-top: 2px;">
+        <div id="level-progress-bar" style="height: 100%; width: 0%; background: #4d5d53; border-radius: 2px; transition: width 0.3s;"></div>
+      </div>
+    </div>
     <a href="settings.html" class="settings">Settings</a>
   </div>
 
@@ -29,14 +34,18 @@
   <script src="audio.js"></script>
   <script src="achievements.js"></script>
   <script>
-    // Display current level
+    // Display current level and progress
     window.addEventListener('DOMContentLoaded', () => {
       if (window.AchievementsSystem) {
         AchievementsSystem.init();
-        const level = AchievementsSystem.getCurrentLevel();
+        const progress = AchievementsSystem.getLevelProgress();
         const levelDisplay = document.getElementById('current-level');
+        const progressBar = document.getElementById('level-progress-bar');
         if (levelDisplay) {
-          levelDisplay.textContent = level;
+          levelDisplay.textContent = progress.currentLevel;
+        }
+        if (progressBar) {
+          progressBar.style.width = (progress.progress * 100) + '%';
         }
       }
     });

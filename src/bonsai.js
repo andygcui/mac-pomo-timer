@@ -102,6 +102,31 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function updateProgressBar(animated = false, targetProgress = null, fixedLevel = null) {
+    if (!window.AchievementsSystem) return;
+    
+    const progress = window.AchievementsSystem.getLevelProgress();
+    const levelDisplay = document.getElementById('current-level');
+    const progressBar = document.getElementById('level-progress-bar');
+    
+    if (levelDisplay) {
+      levelDisplay.textContent = fixedLevel !== null ? fixedLevel : progress.currentLevel;
+    }
+    
+    if (progressBar) {
+      if (animated) {
+        // Smooth animation
+        const targetWidth = targetProgress !== null ? (targetProgress * 100) + '%' : (progress.progress * 100) + '%';
+        progressBar.style.transition = 'width 0.6s ease-out';
+        progressBar.style.width = targetWidth;
+      } else {
+        // Instant update
+        progressBar.style.transition = 'none';
+        progressBar.style.width = (progress.progress * 100) + '%';
+      }
+    }
+  }
+
   function clearAnimation() {
     if (animationInterval) {
       clearInterval(animationInterval);
@@ -323,10 +348,23 @@ window.addEventListener("DOMContentLoaded", () => {
           
           // Track plant completion when it reaches stage 3
           if (stage === 3 && previousStage === 2 && window.AchievementsSystem) {
+            const oldProgress = window.AchievementsSystem.getLevelProgress();
             const result = window.AchievementsSystem.recordPlantGrown('bonsai');
-            if (result.leveledUp) {
-              messageEl.textContent = `Level ${result.level} reached! Your bonsai is fully grown! \n `;
-            }
+            const newProgress = window.AchievementsSystem.getLevelProgress();
+            
+              if (result.leveledUp) {
+                // First animate to 100% while keeping old level displayed
+                updateProgressBar(true, 1.0, oldProgress.currentLevel);
+                setTimeout(() => {
+                  // After animation completes, update to new level (which resets to 0%)
+                  updateProgressBar(false);
+                }, 600);
+                
+                messageEl.textContent = `Level ${result.level} reached! Your bonsai is fully grown! \n `;
+              } else {
+                // Just animate the progress increase
+                updateProgressBar(true);
+              }
           }
           
           if (stage < 3) {
@@ -433,7 +471,7 @@ window.addEventListener("DOMContentLoaded", () => {
               if (messageEl.textContent.indexOf("Level") === -1) {
                 messageEl.textContent = "Your bonsai is fully grown! \n ";
               }
-            startBtn.textContent = "Grow a new plant! \n";
+              startBtn.textContent = "Grow a new plant! \n";
               new Notification("Hooray!", { body: "Your bonsai is fully grown" });
               // Hide timer when plant is fully grown
               timerEl.classList.add('timer-hidden');
@@ -473,10 +511,10 @@ window.addEventListener("DOMContentLoaded", () => {
                 if (messageEl.textContent.indexOf("Level") === -1) {
                   messageEl.textContent = "Your bonsai is fully grown! \n ";
                 }
-                startBtn.textContent = "Grow a new plant! \n";
-                new Notification("Hooray!", { body: "Your bonsai is fully grown" });
-                // Hide timer when plant is fully grown
-                timerEl.classList.add('timer-hidden');
+              startBtn.textContent = "Grow a new plant! \n";
+              new Notification("Hooray!", { body: "Your bonsai is fully grown" });
+              // Hide timer when plant is fully grown
+              timerEl.classList.add('timer-hidden');
               }
             }
             

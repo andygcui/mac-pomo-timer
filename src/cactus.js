@@ -103,6 +103,31 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function updateProgressBar(animated = false, targetProgress = null, fixedLevel = null) {
+    if (!window.AchievementsSystem) return;
+    
+    const progress = window.AchievementsSystem.getLevelProgress();
+    const levelDisplay = document.getElementById('current-level');
+    const progressBar = document.getElementById('level-progress-bar');
+    
+    if (levelDisplay) {
+      levelDisplay.textContent = fixedLevel !== null ? fixedLevel : progress.currentLevel;
+    }
+    
+    if (progressBar) {
+      if (animated) {
+        // Smooth animation
+        const targetWidth = targetProgress !== null ? (targetProgress * 100) + '%' : (progress.progress * 100) + '%';
+        progressBar.style.transition = 'width 0.6s ease-out';
+        progressBar.style.width = targetWidth;
+      } else {
+        // Instant update
+        progressBar.style.transition = 'none';
+        progressBar.style.width = (progress.progress * 100) + '%';
+      }
+    }
+  }
+
   function clearAnimation() {
     if (animationInterval) {
       clearInterval(animationInterval);
@@ -322,13 +347,26 @@ window.addEventListener("DOMContentLoaded", () => {
           const previousStage = stage;
           stage++;
           
-          // Track plant completion when it reaches stage 3
-          if (stage === 3 && previousStage === 2 && window.AchievementsSystem) {
-            const result = window.AchievementsSystem.recordPlantGrown('cactus');
-            if (result.leveledUp) {
-              messageEl.textContent = `Level ${result.level} reached! Your cactus is fully grown! \n `;
+            // Track plant completion when it reaches stage 3
+            if (stage === 3 && previousStage === 2 && window.AchievementsSystem) {
+              const oldProgress = window.AchievementsSystem.getLevelProgress();
+              const result = window.AchievementsSystem.recordPlantGrown('cactus');
+              const newProgress = window.AchievementsSystem.getLevelProgress();
+              
+              if (result.leveledUp) {
+                // First animate to 100% while keeping old level displayed
+                updateProgressBar(true, 1.0, oldProgress.currentLevel);
+                setTimeout(() => {
+                  // After animation completes, update to new level (which resets to 0%)
+                  updateProgressBar(false);
+                }, 600);
+                
+                messageEl.textContent = `Level ${result.level} reached! Your cactus is fully grown! \n `;
+              } else {
+                // Just animate the progress increase
+                updateProgressBar(true);
+              }
             }
-          }
           
           if (stage < 3) {
             // Apply growth animation before showing the static image
@@ -414,9 +452,22 @@ window.addEventListener("DOMContentLoaded", () => {
             
             // Track plant completion when it reaches stage 3
             if (stage === 3 && previousStage === 2 && window.AchievementsSystem) {
+              const oldProgress = window.AchievementsSystem.getLevelProgress();
               const result = window.AchievementsSystem.recordPlantGrown('cactus');
+              const newProgress = window.AchievementsSystem.getLevelProgress();
+              
               if (result.leveledUp) {
+                // First animate to 100% while keeping old level displayed
+                updateProgressBar(true, 1.0, oldProgress.currentLevel);
+                setTimeout(() => {
+                  // After animation completes, update to new level (which resets to 0%)
+                  updateProgressBar(false);
+                }, 600);
+                
                 messageEl.textContent = `Level ${result.level} reached! Your cactus is fully grown! \n `;
+              } else {
+                // Just animate the progress increase
+                updateProgressBar(true);
               }
             }
             
@@ -438,6 +489,7 @@ window.addEventListener("DOMContentLoaded", () => {
               new Notification("Hooray!", { body: "Your cactus is fully grown" });
               // Hide timer when plant is fully grown
               timerEl.classList.add('timer-hidden');
+              messageEl.classList.add('fully-grown');
             }
           }
           
@@ -454,9 +506,22 @@ window.addEventListener("DOMContentLoaded", () => {
               
               // Track plant completion when it reaches stage 3
               if (stage === 3 && previousStage === 2 && window.AchievementsSystem) {
+                const oldProgress = window.AchievementsSystem.getLevelProgress();
                 const result = window.AchievementsSystem.recordPlantGrown('cactus');
+                const newProgress = window.AchievementsSystem.getLevelProgress();
+                
                 if (result.leveledUp) {
+                  // Animate progress bar filling up to 100%, then change to new level
+                  updateProgressBar(true);
+                  setTimeout(() => {
+                    // After animation completes, update to new level
+                    updateProgressBar(false);
+                  }, 600);
+                  
                   messageEl.textContent = `Level ${result.level} reached! Your cactus is fully grown! \n `;
+                } else {
+                  // Just animate the progress increase
+                  updateProgressBar(true);
                 }
               }
               
