@@ -17,16 +17,16 @@ Pomoplant combines the proven Pomodoro Technique with the satisfying progression
 
 ## Download
 
-### macOS (Apple Silicon)
+### Pre-built Binaries
 
-1. Download the DMG file: `pomoplant-1.0.0-arm64.dmg` from the `dist/` directory in this repository
+Download the latest release DMG from [Latest Release](https://github.com/andygcui/pomoplant/releases/tag/v1.0.0)
+
+1. Download the DMG file for macOS
 2. Open the DMG file
-3. Drag Pomoplant into your Applications folder
-4. Run Pomoplant from Applications (you may need to right-click and select "Open" on first launch due to macOS security)
+3. Drag Pomoplant to your Applications folder
+4. Run Pomoplant from Applications (you may need to right-click and select "Open" on first launch)
 
 ### Building from Source
-
-If you want to build the app yourself:
 
 ```bash
 # Clone the repository
