@@ -20,13 +20,69 @@
     }
     
     h1 {
-      font-size: 1.9rem;
+      margin-top: 12px;
+      margin-bottom: 0px;
+      padding-top: 0;
     }
+    
+    .heatmap-cell {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background-color: #ebedf0;
+      transition: background-color 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .heatmap-cell:hover {
+      transform: scale(1.2);
+      z-index: 10;
+    }
+    
+    .heatmap-tooltip {
+      position: absolute;
+      bottom: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #4d5d53;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-family: 'VT323', monospace;
+      font-size: 14px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 1000;
+      margin-bottom: 5px;
+    }
+    
+    .heatmap-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: #4d5d53;
+    }
+    
+    .heatmap-cell:hover .heatmap-tooltip {
+      opacity: 1;
+    }
+    
+    .heatmap-cell.level-0 { background-color: #ebedf0; }
+    .heatmap-cell.level-1 { background-color: #c6e48b; }
+    .heatmap-cell.level-2 { background-color: #7bc96f; }
+    .heatmap-cell.level-3 { background-color: #239a3b; }
+    .heatmap-cell.level-4 { background-color: #196127; }
     
     .achievements-container {
       max-width: 360px;
       margin: 0 auto;
-      padding: 0 8px 56px;
+      padding: 0 8px 20px;
       text-align: center;
     }
     
@@ -153,6 +209,12 @@
     <div style="text-align: center; margin-top: 30px; font-family: 'VT323', monospace; font-size: 20px; color: #4d5d53;">
       Total Plants Grown: <strong id="total-plants-grown">0</strong>
     </div>
+    <div style="text-align: center; margin-top: 20px; font-family: 'VT323', monospace; font-size: 20px; color: #4d5d53;">
+      Current Streak: <strong id="current-streak">0</strong> days
+    </div>
+    <div id="heatmap-container" style="margin-top: 15px; padding: 10px 0;">
+      <div id="heatmap" style="display: grid; grid-template-rows: repeat(7, 12px); grid-auto-flow: column; gap: 2px; justify-content: center; max-width: 900px; margin: 0 auto;"></div>
+    </div>
   </div>
 
   <script src="achievements.js"></script>
@@ -180,6 +242,72 @@
         const totalPlantsDisplay = document.getElementById('total-plants-grown');
         if (totalPlantsDisplay) {
           totalPlantsDisplay.textContent = progress.plantsGrown;
+        }
+        
+        // Display streak
+        const streakDisplay = document.getElementById('current-streak');
+        if (streakDisplay) {
+          const streak = AchievementsSystem.getStreak();
+          streakDisplay.textContent = streak;
+        }
+        
+        // Render heat map
+        const heatmapContainer = document.getElementById('heatmap');
+        if (heatmapContainer) {
+          const activityData = AchievementsSystem.getActivityHeatMap();
+          
+          // Organize data by week columns (weeks go column by column)
+          const weeks = [];
+          for (let i = 0; i < activityData.length; i += 7) {
+            weeks.push(activityData.slice(i, i + 7));
+          }
+          
+          // Create cells - one week at a time (7 days per week, fills column by column)
+          weeks.forEach((week) => {
+            for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
+              const cell = document.createElement('div');
+              cell.className = 'heatmap-cell';
+              
+              if (dayIndex < week.length) {
+                const day = week[dayIndex];
+                
+                // Determine level based on count (similar to GitHub)
+                let level = 0;
+                if (day.count > 0) {
+                  if (day.count === 1) level = 1;
+                  else if (day.count <= 3) level = 2;
+                  else if (day.count <= 5) level = 3;
+                  else level = 4;
+                }
+                
+                cell.classList.add(`level-${level}`);
+                
+                // Format date for tooltip (parse YYYY-MM-DD format correctly)
+                const [year, month, date] = day.date.split('-');
+                const dateObj = new Date(parseInt(year), parseInt(month) - 1, parseInt(date));
+                const formattedDate = dateObj.toLocaleDateString('en-US', { 
+                  month: 'short', 
+                  day: 'numeric', 
+                  year: 'numeric' 
+                });
+                
+                // Create custom tooltip
+                const tooltip = document.createElement('div');
+                tooltip.className = 'heatmap-tooltip';
+                tooltip.textContent = `${formattedDate}: ${day.count} plant${day.count !== 1 ? 's' : ''} grown`;
+                cell.appendChild(tooltip);
+              } else {
+                // Empty cell for incomplete week
+                cell.classList.add('level-0');
+                const tooltip = document.createElement('div');
+                tooltip.className = 'heatmap-tooltip';
+                tooltip.textContent = 'No activity';
+                cell.appendChild(tooltip);
+              }
+              
+              heatmapContainer.appendChild(cell);
+            }
+          });
         }
         
         // Display achievements - sort so unlocked ones appear first

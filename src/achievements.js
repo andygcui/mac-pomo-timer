@@ -22,6 +22,15 @@ const AchievementsSystem = {
     if (!localStorage.getItem('achievements')) {
       localStorage.setItem('achievements', JSON.stringify([]));
     }
+    if (!localStorage.getItem('dailyActivity')) {
+      localStorage.setItem('dailyActivity', JSON.stringify({}));
+    }
+    if (!localStorage.getItem('currentStreak')) {
+      localStorage.setItem('currentStreak', '0');
+    }
+    if (!localStorage.getItem('lastActivityDate')) {
+      localStorage.setItem('lastActivityDate', '');
+    }
   },
   
   // Get total plants grown
@@ -114,11 +123,100 @@ const AchievementsSystem = {
     // Check for achievements
     this.checkAchievements(total, byType);
     
+    // Record daily activity
+    this.recordDailyActivity();
+    
     return {
       totalPlants: total,
       level: this.calculateLevel(total),
       leveledUp: newLevel > currentLevel
     };
+  },
+  
+  // Record activity for today
+  recordDailyActivity() {
+    const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    const activity = JSON.parse(localStorage.getItem('dailyActivity') || '{}');
+    
+    // Increment count for today
+    activity[today] = (activity[today] || 0) + 1;
+    localStorage.setItem('dailyActivity', JSON.stringify(activity));
+    
+    // Update streak
+    this.updateStreak(today);
+  },
+  
+  // Update streak based on activity
+  updateStreak(today) {
+    const lastActivityDate = localStorage.getItem('lastActivityDate');
+    let currentStreak = parseInt(localStorage.getItem('currentStreak') || '0', 10);
+    
+    if (lastActivityDate === '') {
+      // First time - start streak at 1
+      currentStreak = 1;
+    } else {
+      const lastDate = new Date(lastActivityDate);
+      const todayDate = new Date(today);
+      const daysDiff = Math.floor((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+      
+      if (daysDiff === 0) {
+        // Same day - streak continues
+        // Don't increment, just maintain
+      } else if (daysDiff === 1) {
+        // Consecutive day - increment streak
+        currentStreak += 1;
+      } else {
+        // Streak broken - reset to 1
+        currentStreak = 1;
+      }
+    }
+    
+    localStorage.setItem('currentStreak', currentStreak.toString());
+    localStorage.setItem('lastActivityDate', today);
+  },
+  
+  // Get current streak
+  getStreak() {
+    const currentStreak = parseInt(localStorage.getItem('currentStreak') || '0', 10);
+    const lastActivityDate = localStorage.getItem('lastActivityDate');
+    const today = new Date().toISOString().split('T')[0];
+    
+    // Check if streak is still valid (not broken by missing today)
+    if (lastActivityDate !== today) {
+      const lastDate = new Date(lastActivityDate);
+      const todayDate = new Date(today);
+      const daysDiff = Math.floor((todayDate - lastDate) / (1000 * 60 * 60 * 24));
+      
+      if (daysDiff > 1) {
+        // Streak broken - reset
+        localStorage.setItem('currentStreak', '0');
+        return 0;
+      }
+    }
+    
+    return currentStreak;
+  },
+  
+  // Get activity data for heat map (last 140 days = 20 weeks)
+  getActivityHeatMap() {
+    const activity = JSON.parse(localStorage.getItem('dailyActivity') || '{}');
+    const today = new Date();
+    const heatMap = [];
+    
+    // Get last 140 days (20 weeks)
+    for (let i = 139; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split('T')[0];
+      const count = activity[dateStr] || 0;
+      
+      heatMap.push({
+        date: dateStr,
+        count: count
+      });
+    }
+    
+    return heatMap;
   },
   
   // Check for time-based achievements (when starting a focus session)
