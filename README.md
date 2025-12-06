@@ -1,6 +1,6 @@
 # pomoplant 
 
-plant-growing pomodoro timer for macOS. grow digital plants by completing focus sessions and taking productive breaks.
+plant-growing pomodoro timer for macOS; grow digital plants by completing focus sessions and taking productive breaks.
 
 <img src="screenshot.png" width="250" alt="Pomoplant Screenshot" />
 <img src="screenshot2.png" width="250" alt="Pomoplant Screenshot 2" />
