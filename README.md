@@ -2,35 +2,35 @@
 
 plant-growing pomodoro timer for macOS; grow digital plants by completing focus sessions and taking productive breaks.
 
-<img src="screenshot.png" width="250" alt="Pomoplant Screenshot" />
-<img src="screenshot2.png" width="250" alt="Pomoplant Screenshot 2" />
-<img src="screenshot3.png" width="250" alt="Pomoplant Screenshot 3" />
+<img src="screenshot.png" width="200" alt="Pomoplant Screenshot" />
+<img src="screenshot2.png" width="200" alt="Pomoplant Screenshot 2" />
+<img src="screenshot3.png" width="200" alt="Pomoplant Screenshot 3" />
 
-## About
+## about
 
-Pomoplant combines the proven Pomodoro Technique with the satisfying progression of growing plants. Complete focus sessions to water your plants and watch them grow through multiple stages. The more you focus, the more plants you'll grow!
+pomoplant combines the proven Pomodoro Technique with the satisfying progression of growing plants. Complete focus sessions to water your plants and watch them grow through multiple stages. The more you focus, the more plants you'll grow!
 
-## Features
+## features
 
-- **Four Plant Types**: Choose from cactus, bonsai, orchid, and bamboo
-- **Flexible Timer Settings**: Customize focus, short break, and long break durations
-- **Visual Plant Growth**: Watch your plants grow through multiple stages with hand-drawn pixel art animations
-- **Progress Tracking**: Level up system based on total plants grown
-- **Achievements**: Unlock special achievements as you grow your garden
-- **Offline & Persistent**: All data stored locally - your progress never disappears
+- **four plant types**: Choose from cactus, bonsai, orchid, and bamboo
+- **customizable timer settings**: Customize focus, short break, and long break durations
+- **visual plant growth**: Watch your plants grow through multiple stages with hand-drawn pixel art animations
+- **progress tracking**: Level up system based on total plants grown
+- **achievements**: Unlock special achievements as you grow your garden
+- **offline & persistent**: All data stored locally - your progress never disappears
 
-## Download
+## download
 
-### Pre-built Binaries
+### pre-built binaries
 
-Download the latest release DMG from [Latest Release](https://github.com/andygcui/pomoplant/releases/tag/v1.0.0)
+download the latest release DMG from [Latest Release](https://github.com/andygcui/pomoplant/releases/tag/v1.0.0)
 
-1. Download the DMG file for macOS
-2. Open the DMG file
-3. Drag Pomoplant to your Applications folder
-4. Run Pomoplant from Applications (you may need to right-click and select "Open" on first launch)
+1. download the DMG file for macOS
+2. open the DMG file
+3. drag Pomoplant to your Applications folder
+4. run pomoplant from Applications (you may need to right-click and select "Open" on first launch)
 
-### Building from Source
+### building from source
 
 ```bash
 # Clone the repository
@@ -47,20 +47,20 @@ npm start
 npm run dist
 ```
 
-The built DMG will be in the `dist/` directory.
+the built DMG will be in the `dist/` directory.
 
-## How It Works
+## how it works
 
-1. **Select a Plant**: Choose your plant type from the home screen
-2. **Start Focusing**: Click "Start" and complete a focus session
-3. **Water Your Plant**: When the timer ends, click your plant to water it
-4. **Take Breaks**: Take short or long breaks between focus sessions
-5. **Watch It Grow**: Your plant progresses through stages as you complete sessions
-6. **Level Up**: Unlock achievements and track your total plants grown
+1. **select a plant**: Choose your plant type from the home screen
+2. **start focus**: Click "Start" and complete a focus session
+3. **water your plant**: When the timer ends, click your plant to water it
+4. **take breaks**: Take short or long breaks between focus sessions
+5. **watch it grow**: Your plant progresses through stages as you complete sessions
+6. **level up**: Unlock achievements and track your total plants grown
 
-## Development
+## development
 
-Built with:
+built with:
 - Electron
 - Vanilla JavaScript
 - HTML/CSS
