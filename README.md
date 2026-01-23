@@ -2,7 +2,7 @@
 
 plant-growing pomodoro timer for macOS; grow digital plants by completing focus sessions and taking productive breaks.
 
-<img src="screenshot.png" width="250" alt="Pomoplant Screenshot" /> <img src="screenshot2.png" width="250" alt="Pomoplant Screenshot 2" /> <img src="screenshot3.png" width="250" alt="Pomoplant Screenshot 3" />
+<img src="docs/screenshots/screenshot.png" width="250" alt="Pomoplant Screenshot" /> <img src="docs/screenshots/screenshot2.png" width="250" alt="Pomoplant Screenshot 2" /> <img src="docs/screenshots/screenshot3.png" width="250" alt="Pomoplant Screenshot 3" />
 
 ## about
 

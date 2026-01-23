@@ -309,7 +309,7 @@ const AchievementsSystem = {
     if (Notification.permission === 'granted') {
       new Notification(`Achievement Unlocked: ${title}`, {
         body: message,
-        icon: 'icon.png'
+        icon: 'assets/brand/icon.png'
       });
     }
   },

@@ -18,10 +18,3 @@ release/
 # Logs
 *.log
 
-# Local images (repo root)
-/icon.png
-/logo.png
-/screenshot2.png
-/screenshot3.png
-/untitled13.png
-
